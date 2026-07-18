@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sawi: Ensiklopedia & Panduan Budidaya Lengkap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #fdfcf9;
+            --emerald-900: #064e3b;
+            --emerald-700: #047857;
+            --blue-700: #1d4ed8;
+            --stone-200: #e7e5e4;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-main); color: #1c1917; }
+        .chart-container { position: relative; width: 100%; max-width: 500px; height: 350px; margin: auto; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 10px; }
+        .node-active { border-left: 4px solid var(--emerald-700); background-color: #f0fdf4; }
+        .action-active { border-left: 4px solid var(--blue-700); background-color: #eff6ff; }
+        .canvas-box { background: white; border: 1px solid var(--stone-200); border-radius: 1rem; overflow: hidden; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade { animation: fadeIn 0.4s ease-out forwards; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- NAVIGATION -->
+    <nav class="bg-white/80 backdrop-blur-md border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-emerald-900 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-emerald-900/20">S</div>
+                <div>
+                    <h1 class="text-lg font-bold text-stone-900 leading-none tracking-tight">Sawi <span class="text-emerald-600">v2.0</span></h1>
+                    <p class="text-[10px] text-stone-500 uppercase font-bold tracking-widest">Sains & Sistem Operasional Terpadu</p>
+                </div>
+            </div>
+            <div class="hidden md:flex gap-6 text-xs font-bold uppercase tracking-wider text-stone-400">
+                <a href="#knowledgeSection" class="hover:text-emerald-700 transition-colors">Pilar Ilmu</a>
+                <a href="#operationalSection" class="hover:text-blue-700 transition-colors">Panduan Lapangan</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-6 py-10">
+        
+        <!-- SECTION 1: KNOWLEDGE ARCHITECTURE -->
+        <section id="knowledgeSection" class="mb-24">
+            <div class="max-w-3xl mb-12">
+                <span class="px-3 py-1 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full uppercase tracking-widest">Dimensi Teoretis</span>
+                <h2 class="text-4xl font-black text-stone-900 mt-4 mb-4">Arsitektur Pengetahuan Sawi</h2>
+                <p class="text-stone-600 leading-relaxed text-lg">
+                    Memahami budidaya sebagai integrasi variabel multidisiplin. Sebelum melangkah ke lahan, pahami bagaimana ekologi, kimia tanah, dan fisiologi tanaman saling berinteraksi menentukan potensi hasil panen.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Radar Visual -->
+                <div class="lg:col-span-5 bg-white rounded-3xl border border-stone-200 p-8 shadow-sm">
+                    <h3 class="text-center text-xs font-bold text-stone-400 uppercase tracking-widest mb-6">Peta Kritikalitas Variabel</h3>
+                    <div class="chart-container">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                    <div class="mt-8 grid grid-cols-2 gap-4">
+                        <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 text-center">
+                            <span class="block text-2xl font-black text-emerald-900" id="statNodes">0</span>
+                            <span class="text-[9px] font-bold text-emerald-600 uppercase">Sub-Variabel</span>
+                        </div>
+                        <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 text-center">
+                            <span class="block text-2xl font-black text-emerald-900">9</span>
+                            <span class="text-[9px] font-bold text-emerald-600 uppercase">Pilar Utama</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tree Navigator -->
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="bg-white rounded-3xl border border-stone-200 overflow-hidden shadow-sm">
+                        <div class="flex border-b border-stone-100 bg-stone-50/50">
+                            <div class="w-1/3 border-r border-stone-100">
+                                <div class="p-4 text-[10px] font-bold text-stone-400 uppercase">Pilar Utama</div>
+                                <div class="max-h-[400px] overflow-y-auto custom-scrollbar" id="knowledgeSidebar"></div>
+                            </div>
+                            <div class="w-2/3 p-6 bg-white">
+                                <div id="knowledgeContent">
+                                    <div class="flex items-center justify-center h-64 text-stone-400 text-sm italic">
+                                        Pilih pilar di samping untuk eksplorasi detail ilmu...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: OPERATIONAL WORKFLOW -->
+        <section id="operationalSection" class="pt-10">
+            <div class="max-w-3xl mb-12">
+                <span class="px-3 py-1 bg-blue-100 text-blue-800 text-[10px] font-bold rounded-full uppercase tracking-widest">Workflow Operasional</span>
+                <h2 class="text-4xl font-black text-stone-900 mt-4 mb-4">SOP Budidaya & Panduan Teknis</h2>
+                <p class="text-stone-600 leading-relaxed text-lg">
+                    Transformasi teori menjadi aksi. Kami membagi siklus budidaya menjadi 7 fase kritis dengan instruksi langkah-demi-langkah, parameter kuantitatif, dan alat hitung presisi untuk penggunaan di lapangan.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Phase Nav -->
+                <div class="lg:col-span-4 space-y-3">
+                    <div id="phaseNav" class="bg-white rounded-3xl border border-stone-200 p-3 shadow-sm sticky top-24"></div>
+                </div>
+
+                <!-- Detail Panel -->
+                <div class="lg:col-span-8">
+                    <div id="actionDetailArea" class="bg-white rounded-3xl border border-stone-200 p-8 shadow-sm min-h-[600px] transition-all duration-300">
+                        <div class="flex flex-col items-center justify-center h-full text-stone-400 gap-4 mt-20">
+                            <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center text-2xl">🚜</div>
+                            <p class="text-sm font-medium">Pilih Fase Budidaya untuk melihat instruksi teknis lengkap</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-stone-900 text-white mt-32 py-16">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-8 h-8 bg-emerald-500 rounded flex items-center justify-center font-bold">S</div>
+                    <span class="text-xl font-bold tracking-tight">SawiOntology</span>
+                </div>
+                <p class="text-stone-400 text-sm leading-relaxed max-w-sm">
+                    Platform integrasi pengetahuan agronomi untuk meningkatkan efisiensi petani sawi di Indonesia melalui data dan standardisasi operasional.
+                </p>
+            </div>
+            <div class="flex flex-col md:items-end justify-center">
+                <p class="text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-2">Versi Sistem</p>
+                <p class="text-2xl font-light text-stone-300">Enterprise Edition 2.0.4</p>
+                <div class="mt-6 flex gap-4">
+                    <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                    <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                    <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- DATA ARCHITECTURE ---
+        const knowledgeData = [
+            { id: 1, title: "Klimatologi", importance: 95, icon: "☁️", desc: "Variabel atmosfer eksternal", variables: [
+                { name: "Suhu Udara", detail: "Sawi butuh 15-30°C. Suhu >32°C menyebabkan daun layu dan rasa pahit." },
+                { name: "VPD (Vapor Pressure)", detail: "Defisit tekanan uap mengatur bukaan stomata dan transpirasi hara." },
+                { name: "Intensitas Cahaya", detail: "Butuh 10-12 jam/hari. Cahaya kurang menyebabkan tanaman etiolasi (kurus)." }
+            ]},
+            { id: 2, title: "Edapologi", importance: 88, icon: "🌱", desc: "Sains tanah dan media", variables: [
+                { name: "Kemasaman (pH)", detail: "Optimal 6.0 - 7.0. Di bawah 5.5, aluminium menjadi racun bagi akar." },
+                { name: "Drainase & Aerasi", detail: "Oksigen di pori tanah sangat kritis untuk respirasi akar sawi." },
+                { name: "KTK Tanah", detail: "Kapasitas Tukar Kation menentukan seberapa kuat tanah menahan pupuk." }
+            ]},
+            { id: 3, title: "Nutrisi Makro", importance: 98, icon: "⚡", desc: "Elemen Kimia Utama", variables: [
+                { name: "Nitrogen (N)", detail: "Komponen klorofil. Kurang N = daun kuning dan kerdil." },
+                { name: "Fosfor (P)", detail: "Energi (ATP). Mendukung perkembangan akar di awal tanam." },
+                { name: "Kalium (K)", detail: "Aktivator enzim dan ketahanan terhadap serangan penyakit." }
+            ]},
+            { id: 4, title: "Nutrisi Mikro", importance: 75, icon: "🧪", desc: "Kebutuhan Jejak Elementil", variables: [
+                { name: "Kalsium (Ca)", detail: "Mencegah 'tip burn' atau ujung daun terbakar pada sawi." },
+                { name: "Boron (B)", detail: "Penting untuk pembelahan sel pada titik tumbuh tanaman." }
+            ]},
+            { id: 5, title: "Genetika", importance: 82, icon: "🧬", desc: "Potensi Varietas", variables: [
+                { name: "Daya Berkecambah", detail: "Minimal 85% untuk efisiensi populasi lahan." },
+                { name: "Vigoritas", detail: "Kecepatan tumbuh di awal menentukan ketahanan bibit." }
+            ]},
+            { id: 6, title: "Proteksi", importance: 90, icon: "🛡️", desc: "Manajemen Hama & Penyakit", variables: [
+                { name: "PHT", detail: "Pengendalian Hama Terpadu mengutamakan pencegahan biologis." },
+                { name: "Ambang Ekonomi", detail: "Kapan pestisida kimia baru boleh digunakan." }
+            ]},
+            { id: 7, title: "Agronomi", importance: 85, icon: "🚜", desc: "Teknik Budidaya", variables: [
+                { name: "Populasi Optimal", detail: "Jumlah tanaman per hektar menentukan hasil panen total." },
+                { name: "Indeks Luas Daun", detail: "Efisiensi fotosintesis tanaman dalam satu bedengan." }
+            ]},
+            { id: 8, title: "Fisiologi", importance: 78, icon: "🔬", desc: "Proses Internal", variables: [
+                { name: "Laju Fotosintesis", detail: "Dipengaruhi oleh ketersediaan CO2 dan air." },
+                { name: "Respirasi", detail: "Proses pembakaran cadangan energi saat malam hari." }
+            ]},
+            { id: 9, title: "Ekonomi", importance: 70, icon: "💰", desc: "Analisis Usahatani", variables: [
+                { name: "BEP (Break Even)", detail: "Titik balik modal berdasarkan harga pasar." },
+                { name: "R/C Ratio", detail: "Efisiensi biaya operasional terhadap pendapatan." }
+            ]}
+        ];
+
+        const operationalFases = [
+            { 
+                id: 'f1', title: "Fase 1: Persiapan Lahan", icon: "🚜", desc: "Fondasi keberhasilan budidaya.",
+                steps: [
+                    { 
+                        title: "Pengolahan & Bedengan", 
+                        sop: "Tanah dicangkul sedalam 20-30 cm hingga gembur. Buat bedengan dengan lebar 100 cm, tinggi 30 cm (musim hujan) atau 20 cm (musim kemarau). Jarak antar bedengan 30-40 cm untuk parit drainase.",
+                        param: "Target pH: 6.0 - 6.8",
+                        visual: "bedengan",
+                        tool: null
+                    },
+                    { 
+                        title: "Ameliorasi (Pembenah Tanah)", 
+                        sop: "Berikan pupuk kandang matang (kotoran ayam/sapi) sebanyak 2 kg/m2 secara merata di atas bedengan. Jika pH < 5.5, berikan kapur dolomit sesuai kebutuhan.",
+                        param: "Dosis: 20 ton/Ha atau 2kg/m2",
+                        visual: null,
+                        tool: "ameliorasi"
+                    }
+                ]
+            },
+            { 
+                id: 'f2', title: "Fase 2: Persemaian", icon: "🌱", desc: "Manajemen bibit unggul.",
+                steps: [
+                    { 
+                        title: "Penyiapan Media Semai", 
+                        sop: "Gunakan campuran tanah, sekam bakar, dan kompos (1:1:1). Masukkan ke dalam tray semai atau polybag kecil. Pastikan media lembap tapi tidak basah kuyup.",
+                        param: "Kelembapan: 70-80%",
+                        visual: "semai",
+                        tool: null
+                    },
+                    { 
+                        title: "Penanaman Benih", 
+                        sop: "Tanam 1 benih per lubang sedalam 0.5 cm. Tutup tipis dengan tanah. Letakkan di tempat yang terkena sinar matahari pagi tapi terlindung dari hujan deras.",
+                        param: "Waktu Semai: 10-14 hari",
+                        visual: null,
+                        tool: null
+                    }
+                ]
+            },
+            { 
+                id: 'f3', title: "Fase 3: Penanaman", icon: "🪴", desc: "Transplanting ke lahan utama.",
+                steps: [
+                    { 
+                        title: "Seleksi & Jarak Tanam", 
+                        sop: "Pilih bibit yang memiliki 3-4 helai daun sejati. Gunakan jarak tanam 20 x 20 cm atau 25 x 20 cm. Pola zig-zag (staggered) sangat direkomendasikan untuk memaksimalkan penetrasi cahaya.",
+                        param: "Densitas: ~25 tanaman/m2",
+                        visual: "jarak",
+                        tool: null
+                    },
+                    { 
+                        title: "Waktu & Teknik Tanam", 
+                        sop: "Lakukan penanaman pada sore hari (jam 15.00 ke atas) untuk mengurangi stress tanaman akibat penguapan. Tekan tanah di sekitar pangkal batang dengan lembut.",
+                        param: "Kondisi: Teduh/Sore",
+                        visual: null,
+                        tool: null
+                    }
+                ]
+            },
+            { 
+                id: 'f4', title: "Fase 4: Pemeliharaan Rutin", icon: "💧", desc: "Intervensi harian vegetatif.",
+                steps: [
+                    { 
+                        title: "Manajemen Penyiraman", 
+                        sop: "Sawi butuh air yang konsisten. Siram pagi (jam 07.00) dan sore (jam 16.00). Fokuskan pada zona perakaran, hindari menyiram daun secara kasar agar tidak merusak jaringan.",
+                        param: "Volume: 1-2 liter/m2/hari",
+                        visual: "penyiraman",
+                        tool: null
+                    },
+                    { 
+                        title: "Penyiangan Gulma", 
+                        sop: "Lakukan pencabutan rumput liar secara manual setiap 1 minggu sekali. Gulma berkompetisi memperebutkan Nitrogen yang sangat dibutuhkan sawi.",
+                        param: "Interval: 7 hari sekali",
+                        visual: null,
+                        tool: null
+                    }
+                ]
+            },
+            { 
+                id: 'f5', title: "Fase 5: Pemupukan Susulan", icon: "🧪", desc: "Nutrisi booster pertumbuhan.",
+                steps: [
+                    { 
+                        title: "Aplikasi Pupuk Kocor", 
+                        sop: "Gunakan pupuk NPK 16-16-16. Larutkan 5 gram pupuk ke dalam 1 liter air. Siramkan 200-250 ml larutan tersebut ke setiap pangkal tanaman sawi.",
+                        param: "Dosis: 5gr/Liter",
+                        visual: "pupuk",
+                        tool: "npk"
+                    }
+                ]
+            },
+            { 
+                id: 'f6', title: "Fase 6: Proteksi Tanaman", icon: "🛡️", desc: "Pencegahan hama penyakit.",
+                steps: [
+                    { 
+                        title: "Monitoring Hama Utama", 
+                        sop: "Waspadai Ulat Grayak (Spodoptera) dan Ulat Daun (Plutella). Jika ditemukan lubang-lubang kecil pada daun, segera lakukan tindakan mekanis atau aplikasi pestisida nabati.",
+                        param: "Ambang: 5% kerusakan daun",
+                        visual: "hama",
+                        tool: null
+                    }
+                ]
+            },
+            { 
+                id: 'f7', title: "Fase 7: Panen & Pascapanen", icon: "🧺", desc: "Ekstraksi nilai ekonomi.",
+                steps: [
+                    { 
+                        title: "Kriteria & Teknik Panen", 
+                        sop: "Panen dilakukan pada umur 25-35 HST. Potong pangkal batang tepat di atas permukaan tanah menggunakan pisau tajam. Bersihkan daun tua/kuning yang menempel.",
+                        param: "Target: Berat >150gr/tanaman",
+                        visual: "panen",
+                        tool: null
+                    }
+                ]
+            }
+        ];
+
+        let radarChart = null;
+        let currentKnowledgeId = null;
+
+        // --- CORE FUNCTIONS ---
+        window.onload = () => {
+            initRadar();
+            renderKnowledgeSidebar();
+            renderPhaseNav();
+            updateStats();
+        };
+
+        function initRadar() {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            radarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: knowledgeData.map(d => d.title),
+                    datasets: [{
+                        label: 'Skala Prioritas (%)',
+                        data: knowledgeData.map(d => d.importance),
+                        backgroundColor: 'rgba(5, 150, 105, 0.2)',
+                        borderColor: '#059669',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#064e3b'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: { r: { beginAtZero: true, max: 100, ticks: { display: false } } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function updateStats() {
+            let total = 0;
+            knowledgeData.forEach(d => total += d.variables.length);
+            document.getElementById('statNodes').innerText = total;
+        }
+
+        // --- KNOWLEDGE UI ---
+        function renderKnowledgeSidebar() {
+            const container = document.getElementById('knowledgeSidebar');
+            container.innerHTML = knowledgeData.map(d => `
+                <div onclick="selectKnowledge(${d.id})" class="p-4 cursor-pointer hover:bg-emerald-50 transition-all border-b border-stone-50 ${currentKnowledgeId === d.id ? 'node-active' : ''}">
+                    <div class="flex items-center gap-3">
+                        <span class="text-lg">${d.icon}</span>
+                        <div>
+                            <h4 class="text-xs font-bold text-stone-800">${d.title}</h4>
+                            <p class="text-[9px] text-stone-400 uppercase">${d.importance}% Kritikal</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectKnowledge(id) {
+            currentKnowledgeId = id;
+            renderKnowledgeSidebar();
+            const data = knowledgeData.find(d => d.id === id);
+            const content = document.getElementById('knowledgeContent');
+            content.innerHTML = `
+                <div class="animate-fade">
+                    <h3 class="text-xl font-black text-emerald-900 mb-1">${data.title}</h3>
+                    <p class="text-sm text-stone-500 mb-6">${data.desc}</p>
+                    <div class="space-y-4">
+                        ${data.variables.map(v => `
+                            <div class="p-4 bg-stone-50 rounded-2xl border border-stone-100">
+                                <h5 class="font-bold text-stone-800 text-sm mb-1">${v.name}</h5>
+                                <p class="text-xs text-stone-600 leading-relaxed">${v.detail}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- OPERATIONAL UI ---
+        function renderPhaseNav() {
+            const container = document.getElementById('phaseNav');
+            container.innerHTML = operationalFases.map(f => `
+                <div onclick="selectPhase('${f.id}')" class="p-4 mb-2 cursor-pointer rounded-2xl border border-transparent hover:border-blue-100 hover:bg-blue-50/50 transition-all group">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 bg-stone-100 rounded-xl flex items-center justify-center text-xl group-hover:bg-blue-600 group-hover:text-white transition-colors">${f.icon}</div>
+                            <div>
+                                <h4 class="text-sm font-bold text-stone-800">${f.title}</h4>
+                                <p class="text-[10px] text-stone-400 uppercase tracking-tight">${f.desc}</p>
+                            </div>
+                        </div>
+                        <span class="text-stone-300 group-hover:text-blue-500">→</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectPhase(id) {
+            const fase = operationalFases.find(f => f.id === id);
+            const container = document.getElementById('actionDetailArea');
+            container.innerHTML = `
+                <div class="animate-fade">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="w-14 h-14 bg-blue-700 text-white rounded-2xl flex items-center justify-center text-3xl shadow-lg shadow-blue-700/20">${fase.icon}</div>
+                        <div>
+                            <h3 class="text-2xl font-black text-stone-900">${fase.title}</h3>
+                            <p class="text-stone-500 text-sm">${fase.desc}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        ${fase.steps.map((step, idx) => `
+                            <div class="bg-stone-50/50 border border-stone-200 rounded-3xl p-6 hover:shadow-md transition-shadow cursor-pointer" onclick="renderStepDetail('${id}', ${idx})">
+                                <div class="flex justify-between items-start mb-4">
+                                    <span class="w-6 h-6 bg-white border border-stone-200 rounded-full flex items-center justify-center text-[10px] font-bold text-stone-400">${idx+1}</span>
+                                    <span class="text-[9px] font-black text-blue-600 uppercase tracking-widest">Detail SOP</span>
+                                </div>
+                                <h4 class="font-bold text-stone-800 mb-2">${step.title}</h4>
+                                <p class="text-xs text-stone-500 line-clamp-2">${step.sop}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div id="stepInspector" class="mt-8 pt-8 border-t border-stone-100 hidden"></div>
+                </div>
+            `;
+        }
+
+        function renderStepDetail(faseId, stepIdx) {
+            const step = operationalFases.find(f => f.id === faseId).steps[stepIdx];
+            const inspector = document.getElementById('stepInspector');
+            inspector.classList.remove('hidden');
+            
+            inspector.innerHTML = `
+                <div class="bg-white border-2 border-blue-50 rounded-3xl p-8 animate-fade shadow-xl shadow-blue-900/5">
+                    <div class="flex flex-col lg:flex-row gap-10">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-6">
+                                <div class="px-3 py-1 bg-blue-700 text-white text-[10px] font-black rounded-lg uppercase">Instruksi Teknis</div>
+                                <h4 class="text-xl font-bold text-stone-900">${step.title}</h4>
+                            </div>
+                            
+                            <div class="space-y-6">
+                                <div>
+                                    <p class="text-[10px] font-bold text-stone-400 uppercase mb-2">Standard Operating Procedure (SOP)</p>
+                                    <p class="text-sm text-stone-600 leading-relaxed">${step.sop}</p>
+                                </div>
+                                
+                                <div class="flex gap-4 p-4 bg-amber-50 rounded-2xl border border-amber-100">
+                                    <span class="text-xl">📍</span>
+                                    <div>
+                                        <p class="text-[10px] font-bold text-amber-700 uppercase">Parameter Kritis</p>
+                                        <p class="text-sm font-bold text-amber-900">${step.param}</p>
+                                    </div>
+                                </div>
+
+                                ${step.tool ? renderTool(step.tool) : ''}
+                            </div>
+                        </div>
+
+                        <div class="lg:w-80 shrink-0">
+                            <div class="canvas-box p-4 bg-stone-50">
+                                <p class="text-[9px] font-bold text-stone-400 uppercase mb-4 text-center">Visualisasi Teknis</p>
+                                <canvas id="stepCanvas" width="280" height="280" class="mx-auto"></canvas>
+                                <p id="canvasCaption" class="text-[9px] text-stone-500 mt-4 text-center italic leading-tight"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            if(step.visual) {
+                setTimeout(() => drawVisual(step.visual), 50);
+            }
+            inspector.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function renderTool(type) {
+            if(type === 'ameliorasi') {
+                return `
+                    <div class="mt-6 p-6 bg-blue-50 rounded-2xl border border-blue-100">
+                        <p class="text-[10px] font-bold text-blue-700 uppercase mb-4">Kalkulator Kebutuhan Pupuk Kandang</p>
+                        <div class="flex gap-2">
+                            <input type="number" id="inputM2" placeholder="Luas Lahan (m2)" class="flex-1 px-4 py-2 rounded-xl border-none outline-none text-xs shadow-inner">
+                            <button onclick="calcAmel()" class="bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-bold">Hitung</button>
+                        </div>
+                        <p id="resAmel" class="mt-3 text-sm font-bold text-blue-900 hidden"></p>
+                    </div>
+                `;
+            }
+            if(type === 'npk') {
+                return `
+                    <div class="mt-6 p-6 bg-blue-50 rounded-2xl border border-blue-100">
+                        <p class="text-[10px] font-bold text-blue-700 uppercase mb-4">Kalkulator Larutan NPK (Kocor)</p>
+                        <div class="flex gap-2">
+                            <input type="number" id="inputPlant" placeholder="Jumlah Tanaman" class="flex-1 px-4 py-2 rounded-xl border-none outline-none text-xs shadow-inner">
+                            <button onclick="calcNPK()" class="bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-bold">Hitung</button>
+                        </div>
+                        <p id="resNPK" class="mt-3 text-sm font-bold text-blue-900 hidden"></p>
+                    </div>
+                `;
+            }
+            return '';
+        }
+
+        // --- CALCULATOR LOGIC ---
+        window.calcAmel = () => {
+            const val = document.getElementById('inputM2').value;
+            const res = document.getElementById('resAmel');
+            if(val) {
+                res.innerHTML = `Kebutuhan Pupuk: <span class="text-blue-600">${val * 2} kg</span> matang.`;
+                res.classList.remove('hidden');
+            }
+        };
+
+        window.calcNPK = () => {
+            const val = document.getElementById('inputPlant').value;
+            const res = document.getElementById('resNPK');
+            if(val) {
+                res.innerHTML = `Butuh <span class="text-blue-600">${val * 5} gr</span> NPK dilarutkan dalam <span class="text-blue-600">${val * 0.25} L</span> air.`;
+                res.classList.remove('hidden');
+            }
+        };
+
+        // --- CANVAS ENGINE ---
+        function drawVisual(type) {
+            const canvas = document.getElementById('stepCanvas');
+            const ctx = canvas.getContext('2d');
+            const caption = document.getElementById('canvasCaption');
+            ctx.clearRect(0, 0, 280, 280);
+
+            switch(type) {
+                case 'bedengan':
+                    caption.innerText = "Potong Lintang Bedengan: Lebar 100cm, Tinggi 30cm, Parit 40cm.";
+                    ctx.fillStyle = "#78350f"; ctx.beginPath();
+                    ctx.moveTo(40, 220); ctx.lineTo(70, 150); ctx.lineTo(210, 150); ctx.lineTo(240, 220); ctx.fill();
+                    ctx.strokeStyle = "#451a03"; ctx.lineWidth = 2; ctx.stroke();
+                    ctx.fillStyle = "#059669"; ctx.font = "bold 10px sans-serif"; ctx.fillText("Lebar 100cm", 110, 140);
+                    break;
+                case 'semai':
+                    caption.innerText = "Kedalaman Tanam Benih: 0.5 cm agar daya dorong kecambah optimal.";
+                    ctx.fillStyle = "#444"; ctx.fillRect(80, 100, 120, 80);
+                    ctx.strokeStyle = "#fff"; ctx.beginPath(); ctx.moveTo(80, 115); ctx.lineTo(200, 115); ctx.stroke();
+                    ctx.fillStyle = "#fbbf24"; ctx.beginPath(); ctx.arc(140, 125, 4, 0, Math.PI*2); ctx.fill();
+                    break;
+                case 'jarak':
+                    caption.innerText = "Pola Zig-Zag: Menghindari tumpang tindih daun antar baris.";
+                    ctx.fillStyle = "#e7e5e4"; ctx.fillRect(40, 40, 200, 200);
+                    ctx.fillStyle = "#10b981";
+                    for(let i=0; i<3; i++) {
+                        ctx.beginPath(); ctx.arc(80 + (i*60), 100, 12, 0, Math.PI*2); ctx.fill();
+                        ctx.beginPath(); ctx.arc(110 + (i*60), 180, 12, 0, Math.PI*2); ctx.fill();
+                    }
+                    break;
+                case 'penyiraman':
+                    caption.innerText = "Zona Perakaran: Fokus air 5-10cm di sekeliling batang utama.";
+                    ctx.strokeStyle = "#3b82f6"; ctx.lineWidth = 3; ctx.setLineDash([5, 5]);
+                    ctx.beginPath(); ctx.arc(140, 140, 70, 0, Math.PI*2); ctx.stroke();
+                    ctx.fillStyle = "#10b981"; ctx.beginPath(); ctx.arc(140, 140, 20, 0, Math.PI*2); ctx.fill();
+                    break;
+                case 'pupuk':
+                    caption.innerText = "Aplikasi Kocor: Tuang larutan nutrisi langsung ke tanah, bukan ke daun.";
+                    ctx.fillStyle = "#78350f"; ctx.fillRect(40, 200, 200, 30);
+                    ctx.fillStyle = "#10b981"; ctx.fillRect(130, 120, 20, 80);
+                    ctx.fillStyle = "#3b82f6"; ctx.beginPath(); ctx.ellipse(140, 200, 40, 10, 0, 0, Math.PI*2); ctx.fill();
+                    break;
+                case 'hama':
+                    caption.innerText = "Gejala Plutella: Lubang jendela transparan pada helai daun.";
+                    ctx.fillStyle = "#d1fae5"; ctx.beginPath(); ctx.ellipse(140, 140, 80, 100, 0, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = "#fff";
+                    for(let i=0; i<8; i++) {
+                        ctx.beginPath(); ctx.arc(100 + (Math.random()*80), 80 + (Math.random()*120), 6, 0, Math.PI*2); ctx.fill();
+                    }
+                    break;
+                case 'panen':
+                    caption.innerText = "Titik Potong: 1 cm di atas pangkal akar untuk kebersihan maksimal.";
+                    ctx.fillStyle = "#78350f"; ctx.fillRect(40, 220, 200, 20);
+                    ctx.fillStyle = "#059669"; ctx.fillRect(120, 60, 40, 160);
+                    ctx.strokeStyle = "#ef4444"; ctx.lineWidth = 4;
+                    ctx.beginPath(); ctx.moveTo(100, 210); ctx.lineTo(180, 210); ctx.stroke();
+                    break;
+            }
+            ctx.setLineDash([]);
+        }
+
+    </script>
+</body>
+</html>
